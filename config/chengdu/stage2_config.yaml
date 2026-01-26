@@ -1,0 +1,37 @@
+# dataset params
+data_dir: "../traj_dataset"
+city: "chengdu"
+
+# training_args.yaml
+training_args:
+  per_device_train_batch_size: 8
+  gradient_accumulation_steps: 2
+
+  max_steps: -1
+  num_train_epochs: 2
+  max_grad_norm: 1.0
+  warmup_ratio: 0.05
+  optim: adamw_torch
+  lr_scheduler_type: linear
+  learning_rate: 5.0e-4
+  weight_decay: 0.0001
+
+  save_strategy: epoch
+
+  output_dir: stage2_no_oov_ckpt_5e-4
+  overwrite_output_dir: true
+
+  log_level: info
+  logging_strategy: steps
+  logging_steps: 10
+
+  bf16: true
+  gradient_checkpointing: true
+  gradient_checkpointing_kwargs:
+    use_reentrant: false
+
+  do_train: true
+  do_eval: false
+
+  report_to: ["tensorboard"]
+  deepspeed: "config/ds_config.json"

@@ -1,0 +1,44 @@
+# dataset params
+data_dir: "../traj_dataset"
+city: "chengdu"
+save_dir: "logs/chengdu"
+save_per: 1
+start_epoch: 0
+
+mbr:
+  min_lon: 103.92
+  min_lat: 30.56
+  max_lon: 104.21
+  max_lat: 30.79
+
+batch_size: 512
+
+optimizer:
+  opt: "AdamW"
+  lr: 1.0e-4
+  sched: "cos"
+  n_epochs: 100
+  warmup_epoch: 10
+  warmup_lr_init: 1.0e-6
+  lr_min: 1.0e-5
+
+dropout: 0.1
+
+Unet:
+  coords_in_chs: 2
+  ch_multi: [1, 2, 2, 4]
+  hidden_chs: 64
+  num_res_blocks: 2
+  out_chs: 2
+  nheads: 2
+  tlayers: 2
+  road_dim: 128
+  road_layers: 4
+
+RQ_quant:
+  n_codebooks: 4
+  base_vocab_size: 256
+  vocab_multi: [1, 1, 1, 1]
+  d_model: 64
+  decay: 0.99
+  beta: 0.25
