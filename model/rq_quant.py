@@ -125,11 +125,7 @@ class RQBottleneck(nn.Module):
     @torch.no_grad()
     def encode(self, code):
         quant_embs = []
-        # for i in range(code.shape[0]):
-        #     quant = self.codebooks[i].encode(code[i])
-        #     quant_embs.append(quant)
-
-        for i in range(3):
+        for i in range(code.shape[0]):
             quant = self.codebooks[i].encode(code[i])
             quant_embs.append(quant)
 
