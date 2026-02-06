@@ -45,14 +45,6 @@ def main_epoch(args, accelerator):
         config['mbr'],
     )
 
-    eval_loader = get_dataloader(
-        config['data_dir'],
-        config['city'],
-        config['batch_size'],
-        config['mbr'],
-        do_eval=True,
-    )
-
     model = RQVAE(config=config, road_emb=road_emb)
 
     log_dir = Path(config['save_dir'], args.exp_name)
@@ -84,7 +76,6 @@ def main_epoch(args, accelerator):
         config=config,
         model=model,
         train_loader=train_loader,
-        eval_loader=eval_loader,
         log_dir=log_dir,
         model_dir=model_dir,
         accelerator=accelerator,
