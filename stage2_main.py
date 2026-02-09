@@ -32,7 +32,7 @@ class ParserArguments:
         metadata={"help": "Experiment name"}
     )
     model_name: str = field(
-        default='/home/zhousilin/.cache/huggingface/hub/Qwen3-1.7B',
+        default='/huggingface/hub/Qwen3-1.7B',
         metadata={"help": "Model name"}
     )
     lora_r: int = field(default=16, metadata={"help": "LoRA rank"})
