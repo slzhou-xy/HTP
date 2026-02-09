@@ -102,7 +102,7 @@ def main(args):
     city = args.city
     test_data_path = Path('logs', city, args.exp_name, 'data', 'llm_test_traj.parquet')
 
-    model_path = f'logs/{city}/{args.exp_name}/stage2_no_oov_ckpt_5e-4/saved_sft_model'
+    model_path = f'logs/{city}/{args.exp_name}/stage2_ckpt/saved_sft_model'
 
     if accelerator is not None:
         model = AutoModelForCausalLM.from_pretrained(
@@ -208,7 +208,7 @@ def main(args):
         print(f"Successful: {len(all_generate_results)}\n")
         print(f"Failed: {total_failed}\n")
         print(f"Total: {len(all_generate_results) + total_failed}")
-        save_path = Path('logs', city, args.exp_name, 'data', 'oov_generated_patterns_5e-4.pkl')
+        save_path = Path('logs', city, args.exp_name, 'data', 'oov_generated_patterns.pkl')
         pdump(all_generate_results, save_path)
 
 
