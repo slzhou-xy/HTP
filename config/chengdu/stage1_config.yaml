@@ -38,7 +38,7 @@ Unet:
 RQ_quant:
   n_codebooks: 4
   base_vocab_size: 256
-  vocab_multi: [1, 1, 1, 1]
+  vocab_multi: [8, 4, 2, 1]
   d_model: 64
   decay: 0.99
   beta: 0.25
