@@ -78,8 +78,8 @@ def main(args):
         model, f'logs/{city}/{args.exp_name}/stage2_no_oov_ckpt_5e-4/saved_lora_model')
     model.eval()
     model = model.merge_and_unload()
-    model.save_pretrained(Path(f'logs/{city}/{args.exp_name}/stage2_no_oov_ckpt_5e-4', 'saved_sft_model'))
-    tokenizer.save_pretrained(Path(f'logs/{city}/{args.exp_name}/stage2_no_oov_ckpt_5e-4', 'saved_sft_model'))
+    model.save_pretrained(Path(f'logs/{city}/{args.exp_name}/stage2_ckpt', 'saved_sft_model'))
+    tokenizer.save_pretrained(Path(f'logs/{city}/{args.exp_name}/stage2_ckpt', 'saved_sft_model'))
 
 
 if __name__ == '__main__':
