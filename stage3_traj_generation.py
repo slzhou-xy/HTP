@@ -126,7 +126,7 @@ def main(args):
 
     config_path = Path('logs', city, exp_name, 'stage1_config.yaml')
     model_path = Path('logs', city, exp_name, 'rqvae', 'rqvae.pt')
-    generated_data_path = Path('logs', city, exp_name, 'data', 'generated_patterns_5e-4.pkl')
+    generated_data_path = Path('logs', city, exp_name, 'data', 'generated_patterns.pkl')
     traj = pd.read_parquet(f'../traj_dataset/{city}/traj.parquet')
     index = np.load(f'../traj_dataset/{city}/test_index.npy')
     real_traj = traj.iloc[index].reset_index(drop=True)
@@ -238,7 +238,7 @@ def main(args):
                 'road_traj': new_road_traj,
             }
         )
-    pdump(generated_gps_traj, Path('logs', city, exp_name, 'data', 'generated_trajs_5e-4_layer3.pkl'))
+    pdump(generated_gps_traj, Path('logs', city, exp_name, 'data', 'generated_trajs.pkl'))
 
 
 if __name__ == '__main__':
