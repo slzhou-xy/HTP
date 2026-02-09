@@ -213,7 +213,6 @@ def main(args):
 
 
 def extract_response(text):
-    # 提取所有 <|p_begin|>...<|p_end|> 内容
     p_blocks = re.findall(r"<\|p_begin\|>(.*?)<\|p_end\|>", text)
 
     pattern_list = [
@@ -221,7 +220,6 @@ def extract_response(text):
         for block in p_blocks
     ]
 
-    # 提取所有 <t_xx> 数字
     t_tags = re.findall(r"<t_\d+>", text)[0]
 
     road_seq = [int(r) for r in re.findall(r"<road_(\d+)>", text)]
