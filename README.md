@@ -1,4 +1,4 @@
-# [HTP, KDD2026(Feb. Cycle)]From GPS Points to Travel Patterns: Flexible and Semantic Trajectory Generation with LLMs
+# [KDD2026(Feb. Cycle)]From GPS Points to Travel Patterns: Flexible and Semantic Trajectory Generation with LLMs
 
 The implementation of HTP. The dataset is coming soon.
 
