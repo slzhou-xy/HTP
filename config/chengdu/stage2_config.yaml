@@ -4,8 +4,8 @@ city: "chengdu"
 
 # training_args.yaml
 training_args:
-  per_device_train_batch_size: 8
-  gradient_accumulation_steps: 2
+  per_device_train_batch_size: 16
+  gradient_accumulation_steps: 1
 
   max_steps: -1
   num_train_epochs: 2
@@ -18,7 +18,7 @@ training_args:
 
   save_strategy: epoch
 
-  output_dir: stage2_no_oov_ckpt_5e-4
+  output_dir: stage2_oov_ckpt_5e-4
   overwrite_output_dir: true
 
   log_level: info
