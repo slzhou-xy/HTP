@@ -1,5 +1,5 @@
 # dataset params
-data_dir: "../traj_dataset"
+data_dir: "./traj_dataset"
 city: "chengdu"
 save_dir: "logs/chengdu"
 save_per: 1

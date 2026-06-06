@@ -28,7 +28,7 @@ class ParserArguments:
     seed: int = field(default=42)
     city: str = field(default='chengdu')
     exp_name: str = field(
-        default='global_percent_ep100_bs512_code_256_8421_64d_en_64d_1224',
+        default='YOUR_NAME',
         metadata={"help": "Experiment name"}
     )
     model_name: str = field(

@@ -20,7 +20,7 @@ class ParserArguments:
     seed: int = field(default=42)
     city: str = field(default='chengdu')
     exp_name: str = field(
-        default='global_percent_ep100_bs512_code_256_8421_64d_en_64d_1224',
+        default='YOUR_NAME',
         metadata={"help": "Experiment name"}
     )
     model_name: str = field(
@@ -70,12 +70,11 @@ def main(args):
     tokenizer.pad_token = tokenizer.eos_token
 
     special_tokens = get_special_tokens(stage1_config)
-    # num_added = tokenizer.add_tokens(special_tokens)
     num_added = tokenizer.add_special_tokens({'additional_special_tokens': special_tokens})
     model.resize_token_embeddings(len(tokenizer))
 
     model = PeftModel.from_pretrained(
-        model, f'logs/{city}/{args.exp_name}/stage2_no_oov_ckpt_5e-4/saved_lora_model')
+        model, f'logs/{city}/{args.exp_name}/stage2_oov_ckpt_5e-4/saved_lora_model')
     model.eval()
     model = model.merge_and_unload()
     model.save_pretrained(Path(f'logs/{city}/{args.exp_name}/stage2_ckpt', 'saved_sft_model'))

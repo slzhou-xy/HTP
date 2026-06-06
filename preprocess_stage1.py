@@ -19,7 +19,7 @@ class DataArguments:
         metadata={"help": "The city name for which the data is being preprocessed."}
     )
     data_dir: str = field(
-        default='../traj_dataset',
+        default='./traj_dataset',
         metadata={"help": "The input data dir. Should contain the.csv files for the task."}
     )
     seed: int = field(
@@ -163,8 +163,8 @@ def preprocess_data(args: DataArguments):
 
     if not os.path.exists(train_traj_pkl_path):
         logger.info('Preprocessing traj data.')
-        traj_data = pd.read_parquet(Path(args.data_dir, args.city, 'traj.parquet'))
-        traj_rel_info = pd.read_parquet(Path(args.data_dir, args.city, 'traj_rel_info.parquet'))
+        traj_data = pd.read_parquet(Path(args.data_dir, args.city, 'traj.parquet'), engine="fastparquet")
+        traj_rel_info = pd.read_parquet(Path(args.data_dir, args.city, 'traj_rel_info.parquet'), engine="fastparquet")
         traj_data = pd.concat([traj_data, traj_rel_info[['path_percent', 'dx', 'dy']]], axis=1)
         lens = traj_data.shape[0]
 

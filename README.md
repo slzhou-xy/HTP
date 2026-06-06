@@ -1,6 +1,20 @@
-# [KDD2026(Feb. Cycle)]From GPS Points to Travel Patterns: Flexible and Semantic Trajectory Generation with LLMs
+# [KDD2026(Feb. Cycle)] From GPS Points to Travel Patterns: Flexible and Semantic Trajectory Generation with LLMs
 
-[Arxiv](https://arxiv.org/abs/2605.30014). The implementation of HTP. The dataset is coming soon.
+This repository provides the official implementation of **HTP**, introduced in our paper [*From GPS Points to Travel Patterns: Flexible and Semantic Trajectory Generation with LLMs*](https://arxiv.org/abs/2605.30014).
+
+HTP uses **Qwen3-1.7B-Thinking** as its base language model. Please download the model from Hugging Face before running the pipeline.
+
+## Data
+We use the Porto and Chengdu datasets. You can download them from [Google Drive](https://drive.google.com/file/d/1X7veClkdG8Z1pkTNnR0j9cNBAbrLTseD/view?usp=sharing).
+After downloading the data, place each city directory under `traj_data`. Each city directory contains the following files:
+
+- `rn/`: Road network data.
+- `road_emb_128d.pt`: A 128-dimensional road embedding generated using Node2Vec.
+- `train_index.npy` and `test_index.npy`: Indices defining the training and test splits.
+- `traj_rel_info.parquet`: Relative trajectory information, including the relative position `percent` of each GPS point along its matched road segment and the corresponding `dx` and `dy` offsets.
+- `zcore.json`: Statistics used to standardize the `dx` and `dy` offsets.
+- `traj.parquet`: The original trajectory data. In the Chengdu dataset, `flag` indicates whether the taxi is occupied by a passenger. In the Porto dataset, `call_type` indicates the trip's call type. In both datasets, `cpath` is the continuous road-segment sequence obtained after map matching, while `opath` is the sequence of road segments individually aligned with the original GPS points.
+
 
 ## File Structure
 ```
@@ -32,30 +46,73 @@ HTP
 └── stage4_evaluation.py           # evaluate performance
 ```
 
+
 ## Run Code
+
+Run all commands from the `HTP` directory and replace the values in braces with your own settings.
+
+### 1. Preprocess Data
+
+Preprocess trajectories and generate Node2Vec road embeddings.
+
+```bash
+python preprocess_stage1.py --city {CITY} --data_dir {DATA_DIR} --seed 42 --node2vec_dim 128 --node2vec_epochs 20
 ```
-# preprocess for RQVAE
-python preprocess_stage1.py --city {YOUR_CITY_NAME} --data_dir {YOUR_DATA_DIR} --seed 42 --node2vec_dim 128 --node2vec_epochs 20
 
-# training for RQVAE
-accelerate launch --multi_gpu --num_processes 4 --num_machines 1 --mixed_precision bf16 stage1_main.py --seed 42 --exp_name {YOUR_EXP_NAME} --city {YOUR_CITY_NAME}
+### 2. Train RQ-VAE
 
-# preprocess for LLM
-python preprocess_stage2.py --exp_name {YOUR_EXP_NAME} --city {YOUR_CITY_NAME} --seed 42 --device {YOUR_GPU_DEVICE}
-python preprocess_stage3_data4llm.py --exp_name {YOUR_EXP_NAME} --city {YOUR_CITY_NAME} --seed 42
+Train the RQ-VAE to learn discrete travel-pattern representations.
 
-# training for LLM
-accelerate launch --num_processes 4 --num_machines 1 --mixed_precision bf16 stage2_main.py --exp_name {YOUR_EXP_NAME} --city {YOUR_CITY_NAME} --model_name {YOUR_LLM_MODEL_DIR}
+```bash
+accelerate launch --multi_gpu --num_processes 4 --num_machines 1 --mixed_precision bf16 stage1_main.py --city {CITY} --exp_name {EXP_NAME} --seed 42
+```
 
-# Merge LLM with Lora
-python stage2_merge_model.py --exp_name {YOUR_EXP_NAME} --city {YOUR_CITY_NAME} --model_name {YOUR_LLM_MODEL_DIR}
+### 3. Prepare LLM Data
 
-# generation travel patterns by LLM
-accelerate launch --multi_gpu --num_machines 1 --num_processes 4  --mixed_precision bf16 stage3_pattern_generation.py --seed 42--city {YOUR_CITY_NAME} --exp_name {YOUR_EXP_NAME} --ddp True
+Encode trajectories into discrete travel-pattern tokens.
 
-# generation GPS traj.
-python stage3_traj_generation.py --seed 42 --exp_name {YOUR_EXP_NAME} --city {YOUR_CITY_NAME} --device {YOUR_GPU_DEVICE}
+```bash
+python preprocess_stage2.py --city {CITY} --exp_name {EXP_NAME} --seed 42 --device {DEVICE}
+```
 
-# evaulation performance
-python stage4_evaluation.py --exp_name {YOUR_EXP_NAME} --city {YOUR_CITY_NAME}
+Convert the tokens and trajectory information into LLM training data.
+
+```bash
+python preprocess_stage3_data4llm.py --city {CITY} --exp_name {EXP_NAME} --seed 42
+```
+
+### 4. Train and Merge the LLM
+
+Fine-tune the base LLM using LoRA.
+
+```bash
+accelerate launch --num_processes 4 --num_machines 1 --mixed_precision bf16 stage2_main.py --city {CITY} --exp_name {EXP_NAME} --model_name {LLM_MODEL_DIR} --seed 42
+```
+
+Merge the trained LoRA adapter into the base LLM.
+
+```bash
+python stage2_merge_model.py --city {CITY} --exp_name {EXP_NAME} --model_name {LLM_MODEL_DIR} --seed 42
+```
+
+### 5. Generate Trajectories
+
+Generate travel patterns and road sequences using the fine-tuned LLM.
+
+```bash
+accelerate launch --multi_gpu --num_processes 4 --num_machines 1 --mixed_precision bf16 stage3_pattern_generation.py --city {CITY} --exp_name {EXP_NAME} --seed 42 --ddp true
+```
+
+Decode the generated travel patterns into GPS trajectories.
+
+```bash
+python stage3_traj_generation.py --city {CITY} --exp_name {EXP_NAME} --seed 42 --device {DEVICE}
+```
+
+### 6. Evaluate
+
+Evaluate the generated trajectories.
+
+```bash
+python stage4_evaluation.py --city {CITY} --exp_name {EXP_NAME} --seed 42
 ```

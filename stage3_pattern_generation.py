@@ -25,7 +25,7 @@ class ParserArguments:
     seed: int = field(default=42)
     city: str = field(default='porto')
     exp_name: str = field(
-        default='global_percent_ep100_bs512_code_256_8421_64d_en_64d_1224',
+        default='YOUR_NAME',
         metadata={"help": "Experiment name"}
     )
     ddp: bool = field(
@@ -208,7 +208,7 @@ def main(args):
         print(f"Successful: {len(all_generate_results)}\n")
         print(f"Failed: {total_failed}\n")
         print(f"Total: {len(all_generate_results) + total_failed}")
-        save_path = Path('logs', city, args.exp_name, 'data', 'oov_generated_patterns.pkl')
+        save_path = Path('logs', city, args.exp_name, 'data', 'generated_patterns.pkl')
         pdump(all_generate_results, save_path)
 
 
