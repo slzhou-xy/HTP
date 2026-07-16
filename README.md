@@ -43,7 +43,8 @@ HTP
 ├── stage2_merge_model.py          # merge LLM with Lora
 ├── stage3_pattern_generation.py   # generate travel patterns by LLM
 ├── stage3_traj_generation.py      # generate GPS traj.
-└── stage4_evaluation.py           # evaluate performance
+├── stage4_evaluation.py           # evaluate performance
+└── utils.py                       # some utility functions
 ```
 
 
