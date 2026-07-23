@@ -36,7 +36,6 @@ HTP
 ├── preprocess_stage1.py           # preprocess for RQVAE
 ├── preprocess_stage2.py           # preprocess for LLM
 ├── preprocess_stage3_data4llm.py  # preprocess for LLM
-├── readme.md
 ├── stage1_main.py                 # training for RQVAE
 ├── stage1_trainer.py              # trainer for RQVAE
 ├── stage2_main.py                 # training for LLM
